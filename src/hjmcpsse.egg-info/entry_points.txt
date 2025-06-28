@@ -1,0 +1,2 @@
+[console_scripts]
+hjmcpsse = hjmcpsse.__main__:main
