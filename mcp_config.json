@@ -1,12 +1,8 @@
 {
   "mcpServers": {
     "hjmcpsse": {
-      "command": "python",
-      "args": ["-m", "hjmcpsse"],
-      "cwd": "/home/ubuntu/repos/hjmcpsse",
-      "env": {
-        "PYTHONPATH": "/home/ubuntu/repos/hjmcpsse/src"
-      }
+      "url": "http://localhost:8000/sse",
+      "transport": "sse"
     }
   }
 }
