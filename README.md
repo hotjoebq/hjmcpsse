@@ -11,6 +11,10 @@ This MCP server provides:
 - **Prompt**: Code generator for creating structured prompts for code generation
 - **Transport**: SSE (Server-Sent Events) for real-time communication
 
+## Requirements
+
+- Python 3.10+
+
 ## Installation
 
 1. Clone the repository:
@@ -76,8 +80,8 @@ mcp-cli tool read "files:///path/to/file.txt" --server hjmcpsse
 # Basic calculation
 mcp-cli tool call calculator --server hjmcpsse --input '{"expression": "2 + 3 * 4"}'
 
-# Complex expression
-mcp-cli tool call calculator --server hjmcpsse --input '{"expression": "sqrt(16) + abs(-5)"}'
+# Complex expression with math functions
+mcp-cli tool call calculator --server hjmcpsse --input '{"expression": "sqrt(16) + sin(pi/2)"}'
 
 # Error handling
 mcp-cli tool call calculator --server hjmcpsse --input '{"expression": "1 / 0"}'
@@ -184,6 +188,8 @@ mypy src/
 - Safely evaluates mathematical expressions
 - Supports basic arithmetic operations (+, -, *, /, %, **)
 - Includes functions like abs(), round(), min(), max(), sum()
+- Advanced math functions: sqrt(), sin(), cos(), tan(), log(), exp()
+- Mathematical constants: pi, e
 - Comprehensive error handling for invalid expressions
 
 ### Code Generator Prompt

@@ -1,79 +1,125 @@
+"""
+File system resource implementation for MCP server
+"""
+
 import os
 from pathlib import Path
-from typing import List, Dict, Any
-from pydantic import BaseModel
+from typing import List, Optional
+from dataclasses import dataclass
 
 
-class FileInfo(BaseModel):
+@dataclass
+class FileInfo:
+    """Information about a file"""
     name: str
-    path: str
-    type: str
     size: int
-    modified: float
+    is_directory: bool
+    path: str
 
 
-class DirectoryListing(BaseModel):
+@dataclass
+class DirectoryListing:
+    """Directory listing with files and subdirectories"""
     path: str
     files: List[FileInfo]
     directories: List[FileInfo]
 
 
 def list_directory(path: str) -> DirectoryListing:
-    """List contents of a directory"""
+    """List contents of a directory
+    
+    Args:
+        path: Directory path to list
+        
+    Returns:
+        DirectoryListing with files and subdirectories
+        
+    Raises:
+        OSError: If directory cannot be accessed
+    """
+    directory_path = Path(path).resolve()
+    
+    if not directory_path.exists():
+        raise OSError(f"Directory does not exist: {path}")
+    
+    if not directory_path.is_dir():
+        raise OSError(f"Path is not a directory: {path}")
+    
+    files = []
+    directories = []
+    
     try:
-        directory_path = Path(path)
-        if not directory_path.exists():
-            raise FileNotFoundError(f"Directory {path} does not exist")
-        
-        if not directory_path.is_dir():
-            raise NotADirectoryError(f"{path} is not a directory")
-        
-        files = []
-        directories = []
-        
         for item in directory_path.iterdir():
             try:
-                stat = item.stat()
+                stat_info = item.stat()
                 file_info = FileInfo(
                     name=item.name,
-                    path=str(item),
-                    type="file" if item.is_file() else "directory",
-                    size=stat.st_size,
-                    modified=stat.st_mtime
+                    size=stat_info.st_size,
+                    is_directory=item.is_dir(),
+                    path=str(item)
                 )
                 
-                if item.is_file():
-                    files.append(file_info)
-                elif item.is_dir():
+                if item.is_dir():
                     directories.append(file_info)
-            except (PermissionError, OSError):
+                else:
+                    files.append(file_info)
+                    
+            except (OSError, PermissionError):
                 continue
-        
-        return DirectoryListing(
-            path=str(directory_path),
-            files=sorted(files, key=lambda x: x.name.lower()),
-            directories=sorted(directories, key=lambda x: x.name.lower())
-        )
+                
+    except PermissionError:
+        raise OSError(f"Permission denied accessing directory: {path}")
     
-    except Exception as e:
-        raise RuntimeError(f"Error listing directory {path}: {str(e)}")
+    files.sort(key=lambda x: x.name.lower())
+    directories.sort(key=lambda x: x.name.lower())
+    
+    return DirectoryListing(
+        path=str(directory_path),
+        files=files,
+        directories=directories
+    )
 
 
 def get_file_content(path: str, max_size: int = 1024 * 1024) -> str:
-    """Get content of a text file"""
-    try:
-        file_path = Path(path)
-        if not file_path.exists():
-            raise FileNotFoundError(f"File {path} does not exist")
-        
-        if not file_path.is_file():
-            raise IsADirectoryError(f"{path} is not a file")
-        
-        if file_path.stat().st_size > max_size:
-            raise ValueError(f"File {path} is too large (max {max_size} bytes)")
-        
-        with open(file_path, 'r', encoding='utf-8', errors='replace') as f:
-            return f.read()
+    """Get content of a text file
     
+    Args:
+        path: File path to read
+        max_size: Maximum file size to read (default 1MB)
+        
+    Returns:
+        File content as string
+        
+    Raises:
+        OSError: If file cannot be accessed or is too large
+    """
+    file_path = Path(path).resolve()
+    
+    if not file_path.exists():
+        raise OSError(f"File does not exist: {path}")
+    
+    if not file_path.is_file():
+        raise OSError(f"Path is not a file: {path}")
+    
+    try:
+        stat_info = file_path.stat()
+        if stat_info.st_size > max_size:
+            raise OSError(f"File too large: {stat_info.st_size} bytes (max {max_size})")
+        
+        encodings = ['utf-8', 'utf-16', 'latin-1']
+        
+        for encoding in encodings:
+            try:
+                with open(file_path, 'r', encoding=encoding) as f:
+                    return f.read()
+            except UnicodeDecodeError:
+                continue
+        
+        with open(file_path, 'rb') as f:
+            content = f.read()
+            return f"Binary file ({len(content)} bytes): {content[:100].hex()}..."
+            
+    except PermissionError:
+        raise OSError(f"Permission denied reading file: {path}")
     except Exception as e:
-        raise RuntimeError(f"Error reading file {path}: {str(e)}")
+        raise OSError(f"Error reading file {path}: {str(e)}")
