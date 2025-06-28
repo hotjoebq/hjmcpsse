@@ -1,0 +1,36 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Run hjmcpsse MCP Server",
+            "type": "python",
+            "request": "launch",
+            "module": "hjmcpsse",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/src"
+            },
+            "args": [
+                "--log-level", "DEBUG"
+            ]
+        },
+        {
+            "name": "Debug hjmcpsse MCP Server",
+            "type": "python",
+            "request": "launch",
+            "module": "hjmcpsse",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/src"
+            },
+            "args": [
+                "--log-level", "DEBUG",
+                "--host", "localhost",
+                "--port", "8000"
+            ],
+            "justMyCode": false
+        }
+    ]
+}
