@@ -1,7 +1,7 @@
 {
   "mcpServers": {
     "hjmcpsse": {
-      "url": "http://localhost:8000/sse",
+      "url": "http://localhost:8001/sse",
       "transport": "sse"
     }
   }
