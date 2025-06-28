@@ -1,3 +1,4 @@
+import argparse
 import asyncio
 import logging
 from pathlib import Path
@@ -10,10 +11,7 @@ from .prompts.code_generator import generate_code_prompt, get_code_template
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-mcp = FastMCP("hjmcpsse", host="localhost", port=8000)
 
-
-@mcp.resource("files://{path}")
 def get_file_resource(path: str) -> str:
     """Browse filesystem and get file/directory information"""
     try:
@@ -48,7 +46,6 @@ def get_file_resource(path: str) -> str:
         return f"Error accessing {path}: {str(e)}"
 
 
-@mcp.tool()
 def calculator(expression: str) -> Dict[str, Any]:
     """Calculate mathematical expressions safely
     
@@ -64,7 +61,6 @@ def calculator(expression: str) -> Dict[str, Any]:
     }
 
 
-@mcp.prompt("code_generator")
 def code_generator(
     description: str,
     language: str = "python",
@@ -98,7 +94,6 @@ def code_generator(
     return result
 
 
-@mcp.tool()
 def get_template(language: str = "python", template_type: str = "function") -> Dict[str, Any]:
     """Get code templates for common patterns
     
@@ -116,7 +111,23 @@ def get_template(language: str = "python", template_type: str = "function") -> D
 
 def main():
     """Run the MCP server"""
-    logger.info("Starting hjmcpsse MCP server with SSE transport...")
+    parser = argparse.ArgumentParser(description="hjmcpsse MCP Server")
+    parser.add_argument("--host", default="localhost", help="Host to bind to")
+    parser.add_argument("--port", type=int, default=8000, help="Port to bind to")
+    parser.add_argument("--log-level", default="INFO", help="Log level")
+    
+    args = parser.parse_args()
+    
+    logging.getLogger().setLevel(getattr(logging, args.log_level.upper()))
+    
+    mcp = FastMCP("hjmcpsse", host=args.host, port=args.port)
+    
+    mcp.resource("files://{path}")(get_file_resource)
+    mcp.tool()(calculator)
+    mcp.prompt("code_generator")(code_generator)
+    mcp.tool()(get_template)
+    
+    logger.info(f"Starting hjmcpsse MCP server with SSE transport on {args.host}:{args.port}...")
     
     try:
         mcp.run(transport="sse")
