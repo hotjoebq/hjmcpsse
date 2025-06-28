@@ -1,3 +1,3 @@
 """
-MCP Resources for hjmcpsse
+Resources module for hjmcpsse MCP server
 """

@@ -24,7 +24,8 @@
                 "PYTHONPATH": "${workspaceFolder}/src",
                 "LOG_LEVEL": "DEBUG"
             },
-            "args": ["--log-level", "DEBUG"]
+            "args": ["--log-level", "DEBUG", "--host", "localhost", "--port", "8000"],
+            "justMyCode": false
         }
     ]
 }

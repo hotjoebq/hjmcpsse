@@ -1,3 +1,3 @@
 """
-MCP Tools for hjmcpsse
+Tools module for hjmcpsse MCP server
 """

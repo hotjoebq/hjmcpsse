@@ -80,8 +80,8 @@ mcp-cli tool read "files:///path/to/file.txt" --server hjmcpsse
 # Basic calculation
 mcp-cli tool call calculator --server hjmcpsse --input '{"expression": "2 + 3 * 4"}'
 
-# Complex expression
-mcp-cli tool call calculator --server hjmcpsse --input '{"expression": "sqrt(16) + abs(-5)"}'
+# Complex expression with math functions
+mcp-cli tool call calculator --server hjmcpsse --input '{"expression": "sqrt(16) + sin(pi/2)"}'
 
 # Error handling
 mcp-cli tool call calculator --server hjmcpsse --input '{"expression": "1 / 0"}'
@@ -188,6 +188,8 @@ mypy src/
 - Safely evaluates mathematical expressions
 - Supports basic arithmetic operations (+, -, *, /, %, **)
 - Includes functions like abs(), round(), min(), max(), sum()
+- Advanced math functions: sqrt(), sin(), cos(), tan(), log(), exp()
+- Mathematical constants: pi, e
 - Comprehensive error handling for invalid expressions
 
 ### Code Generator Prompt

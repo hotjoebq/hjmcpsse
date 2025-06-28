@@ -1,3 +1,3 @@
 """
-MCP Prompts for hjmcpsse
+Prompts module for hjmcpsse MCP server
 """
