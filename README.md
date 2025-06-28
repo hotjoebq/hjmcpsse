@@ -2,6 +2,17 @@
 
 A Python MCP (Model Context Protocol) server with SSE (Server-Sent Events) transport.
 
+## ⚠️ Important: Python Version Requirement
+
+**This project requires Python 3.10 or higher.** The MCP package dependencies are not compatible with Python 3.9 or earlier versions.
+
+If you're getting installation errors like:
+```
+ERROR: Could not find a version that satisfies the requirement mcp>=1.10.0 (from versions: none)
+```
+
+This means you're using Python 3.9 or earlier. See the [Troubleshooting](#troubleshooting) section below for upgrade instructions.
+
 ## Features
 
 This MCP server provides:
@@ -13,7 +24,7 @@ This MCP server provides:
 
 ## Requirements
 
-- Python 3.10+
+- **Python 3.10 or higher** (required for MCP package compatibility)
 
 ## Installation
 
@@ -218,6 +229,79 @@ The server includes comprehensive error handling:
 - Calculator uses AST parsing for safe expression evaluation
 - No arbitrary code execution
 - Input validation and sanitization
+
+## Troubleshooting
+
+### Python Version Issues
+
+**Problem**: Getting `ERROR: Could not find a version that satisfies the requirement mcp>=1.10.0`
+
+**Cause**: You're using Python 3.9 or earlier, but the MCP package requires Python 3.10+.
+
+**Solution**: Upgrade to Python 3.10 or higher:
+
+#### Option 1: Use Python 3.10+ in VSCode (Recommended)
+1. **Check available Python versions:**
+   ```bash
+   python3.10 --version || echo "Python 3.10 not found"
+   python3.11 --version || echo "Python 3.11 not found" 
+   python3.12 --version || echo "Python 3.12 not found"
+   ```
+
+2. **Create new virtual environment with Python 3.10+:**
+   ```bash
+   python3.10 -m venv venv_py310
+   source venv_py310/bin/activate  # On Windows: venv_py310\Scripts\activate
+   pip install --upgrade pip
+   ```
+
+3. **Select the new Python interpreter in VSCode:**
+   - Press `Ctrl+Shift+P` (or `Cmd+Shift+P` on Mac)
+   - Type "Python: Select Interpreter"
+   - Choose the Python from your new `venv_py310/bin/python`
+
+#### Option 2: Install Python 3.10+ on your system
+```bash
+# On Ubuntu/Debian:
+sudo apt update && sudo apt install python3.10 python3.10-venv
+
+# On macOS with Homebrew:
+brew install python@3.10
+
+# On Windows: Download from python.org
+```
+
+#### Option 3: Use pyenv (if available)
+```bash
+pyenv install 3.10.0
+pyenv local 3.10.0
+```
+
+#### Verify the fix:
+```bash
+python --version  # Should show 3.10+
+pip install -r requirements.txt
+python -m hjmcpsse --help
+```
+
+### Network/Proxy Issues
+
+If you have Python 3.10+ but still can't install the MCP package:
+
+1. **Check PyPI connectivity:**
+   ```bash
+   curl -s https://pypi.org/simple/mcp/ | head -5
+   ```
+
+2. **Try installing with verbose output:**
+   ```bash
+   pip install -v mcp>=1.10.0
+   ```
+
+3. **Clear pip cache:**
+   ```bash
+   pip cache purge
+   ```
 
 ## License
 
