@@ -34,9 +34,17 @@ git clone https://github.com/hotjoebq/hjmcpsse.git
 cd hjmcpsse
 ```
 
-2. Create a virtual environment:
+2. Create a virtual environment with Python 3.10+:
 ```bash
+# Make sure you're using Python 3.10 or higher
+python --version  # Should show 3.10+
+
+# If you have Python 3.10+, create venv:
 python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# If you have Python 3.9 or earlier, use Python 3.10+ specifically:
+python3.10 -m venv venv  # or python3.11, python3.12, etc.
 source venv/bin/activate  # On Windows: venv\Scripts\activate
 ```
 
@@ -65,10 +73,14 @@ python -m hjmcpsse --host localhost --port 8000 --log-level DEBUG
 
 This project is configured for VSCode development:
 
-1. Open the project in VSCode
-2. Install the Python extension
-3. Select the virtual environment as your Python interpreter
-4. Use F5 to run/debug the server with the pre-configured launch settings
+1. **Ensure Python 3.10+ is available**: Check `python3.10 --version` or higher
+2. Open the project in VSCode
+3. Install the Python extension
+4. **Important**: Select a Python 3.10+ interpreter:
+   - Press `Ctrl+Shift+P` (or `Cmd+Shift+P` on Mac)
+   - Type "Python: Select Interpreter"
+   - Choose Python 3.10+ from your virtual environment
+5. Use F5 to run/debug the server with the pre-configured launch settings
 
 ### Testing with mcp-cli
 
